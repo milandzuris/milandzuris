@@ -1,16 +1,16 @@
-### Hi there 👋
+### Hi there 👋, Milan Dzuriš
+![](https://pbs.twimg.com/profile_banners/2900952189/1611383519/600x200)
 
-<!--
-**milandzuris/milandzuris** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Hi im Milan 18 Old from Slovakia
 
-Here are some ideas to get you started:
+Skills: YAML Python CSS HTML
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+- 🔭 I’m currently working on Dzuriš Home 
+- 🌱 I’m currently learning Python, C, JavaScript, C++ 
+
+
+[<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/github.svg' alt='github' height='40'>](https://github.com/milandzuris)  [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/linkedin.svg' alt='linkedin' height='40'>](https://www.linkedin.com/in/milandzuris/)  [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/instagram.svg' alt='instagram' height='40'>](https://www.instagram.com/milandzuris/)  [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/twitter.svg' alt='twitter' height='40'>](https://twitter.com/milandzuris)  [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/reddit.svg' alt='Reddit' height='40'>](https://www.reddit.com/user/milandzuris)  [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/icloud.svg' alt='website' height='40'>](bit.ly/milandzuris)  [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/discord.svg' alt='discord' height='40'>](https://discord.gg/wpg5aAx)  
+
+![GitHub metrics](https://metrics.lecoq.io/milandzuris)  
+
+![Profile views](https://gpvc.arturio.dev/milandzuris)  
