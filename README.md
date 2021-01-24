@@ -1,5 +1,5 @@
 ### Hi there 👋, Milan Dzuriš
-![](https://pbs.twimg.com/profile_banners/2900952189/1611383519/600x200)
+![](https://github.com/milandzuris/milandzuris/blob/main/MIlan%20Dzuri%C5%A1.jpg)
 
 Hi im Milan 18 Old from Slovakia
 
