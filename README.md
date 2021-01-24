@@ -3,7 +3,7 @@
 
 ## Hi im Milan 18 Old from Slovakia
 
-# Skills: YAML/ CSS/ HTML/
+Skills: YAML/ CSS/ HTML/
 
 - 🔭 I’m currently working on Dzuriš Home 
 - 🌱 I’m currently learning Python, C, JavaScript, C++ 
