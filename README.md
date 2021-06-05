@@ -1,7 +1,7 @@
 # Milan Dzuriš README.md
 ![](https://github.com/milandzuris/milandzuris/blob/main/MIlan%20Dzuri%C5%A1.jpg)
 
-## Hi im Milan 18 Old from Slovakia
+## Hi im Milan 19 Old from Slovakia
 
 Skills: YAML/ CSS/ HTML/
 
