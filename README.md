@@ -3,9 +3,10 @@
 
 ## Hi im Milan from Slovakia
 
-Skills: Iot, Smart Home, Node-RED, YAML, CSS, HTML.
+Skills: IoT, Smart Home, Node-RED, YAML, CSS, HTML.
 
 - 🔭 I’m currently working on Dzuriš Home 
 - 🌱 I’m currently learning Python, C, JavaScript, C++ 
+
 
 ![Profile views](https://gpvc.arturio.dev/milandzuris)
