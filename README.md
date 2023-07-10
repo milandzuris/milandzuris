@@ -10,3 +10,4 @@ Skills: IoT, Smart Home, Node-RED, YAML, CSS, HTML.
 
 
 ![Profile views](https://gpvc.arturio.dev/milandzuris)
+![](https://komarev.com/ghpvc/?username=milandzuris&style=flat-square)
