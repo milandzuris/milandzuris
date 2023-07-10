@@ -8,6 +8,4 @@ Skills: IoT, Smart Home, Node-RED, YAML, CSS, HTML.
 - 🔭 I’m currently working on Dzuriš Home 
 - 🌱 I’m currently learning Python, C, JavaScript, C++ 
 
-
-![Profile views](https://gpvc.arturio.dev/milandzuris)
 ![](https://komarev.com/ghpvc/?username=milandzuris&style=flat-square)
