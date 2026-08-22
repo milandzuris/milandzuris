@@ -33,16 +33,6 @@ I'm Milan, a passionate developer with a keen interest in Smart Home technologie
 
 ---
 
-## 📈 GitHub Stats
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/milandzuris/milandzuris/main/assets/metrics-3.svg" alt="GitHub achievements" />
-
-</div>
-
----
-
 ## 🐍 Contribution Snake
 
 <div align="center">
