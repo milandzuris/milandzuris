@@ -87,3 +87,29 @@ jobs:
           # plugin_topics: yes
           # plugin_topics_mode: starred
           # plugin_topics_limit: 12
+
+  # ─────────────────────────────────────────────────────────────
+  # PANEL 3  →  assets/metrics-3.svg
+  # Náhrada za trophy karty (github-profile-trophy.vercel.app)
+  # Generuje sa lokálne, nezávisí na cudzom serveri
+  # ─────────────────────────────────────────────────────────────
+  panel-three:
+    runs-on: ubuntu-latest
+    needs: panel-two          # serializované, aby si joby netlačili commit naraz
+    permissions:
+      contents: write
+    steps:
+      - uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          filename: assets/metrics-3.svg
+          user: ${{ github.repository_owner }}
+          template: classic
+          base: ""
+          config_timezone: Europe/Bratislava
+
+          plugin_achievements: yes
+          plugin_achievements_display: compact
+          plugin_achievements_threshold: C
+          plugin_achievements_secrets: yes
+          plugin_achievements_limit: 0
