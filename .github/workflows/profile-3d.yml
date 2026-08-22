@@ -1,34 +1,50 @@
-name: GitHub Profile 3D Contrib
+name: Generate Profile 3D
+
+# Vygeneruje izometrický 3D graf tvojich príspevkov za posledný rok.
+# Ukladá do priečinka profile-3d-contrib/ v Branch "main".
 
 on:
   schedule:
-    # 3D contrib — 00:17 a 12:17 SK času (leto/CEST = UTC+2)
-    # V zime (CET = UTC+1) posuň obe hodiny o +1: 23 a 11
-    - cron: "17 22 * * *"
-    - cron: "17 10 * * *"
+    # Každé 4 hodiny, na 40. minúte (UTC)
+    # Náš čas v lete = +2h → 02:40, 06:40, 10:40, 14:40, 18:40, 22:40
+    - cron: "40 */4 * * *"
+
   workflow_dispatch:
+
   push:
     branches:
       - main
+    paths:
+      - .github/workflows/profile-3d.yml
+
+concurrency:
+  group: profile-3d
+  cancel-in-progress: true
 
 jobs:
-  build:
+  generate:
+    name: Render 3D contribution calendar
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: yoshi389111/github-profile-3d-contrib@0.7.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Render 3D SVGs
+        uses: yoshi389111/github-profile-3d-contrib@0.7.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: ${{ github.repository_owner }}
-          # SETTING_JSON: ./profile-3d-settings.json   # ak chceš vlastné farby
 
-      - name: Commit & push
+      - name: Commit and push
         run: |
+          set -euo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A profile-3d-contrib
-          git diff --staged --quiet || git commit -m "chore: update 3d contrib [skip ci]"
+          git diff --staged --quiet && echo "Bez zmien, nič sa necommituje." && exit 0
+          git commit -q -m "chore: update 3D contrib [skip ci]"
           git push
