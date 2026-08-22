@@ -109,8 +109,8 @@ jobs:
           cp profile-3d-contrib/*.svg "$OUT/profile-3d-contrib/"
 
           # Kópia README s cestami prepísanými na Branch "preview".
-          # Poradie je dôležité: najprv /output/, až potom /main/.
-          sed -e "s|/${REPO}/output/|/${REPO}/preview/snake/|g" \
+          # Poradie je dôležité: najprv /snake/, až potom /main/.
+          sed -e "s|/${REPO}/snake/|/${REPO}/preview/snake/|g" \
               -e "s|/${REPO}/main/|/${REPO}/preview/|g" \
               README.md > "$OUT/body.md"
 
