@@ -44,6 +44,12 @@ jobs:
           template: classic
           base: header, activity, community, repositories, metadata
           config_timezone: Europe/Bratislava
+          extras_css: |
+            body { background: #0c0a08 !important; color: #fafaf9 !important;
+                   font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif !important; }
+            h2 { color: #f97316 !important; letter-spacing: -0.01em; }
+            a { color: #f97316 !important; }
+            .field, .row, .value { color: rgba(250,250,249,0.6) !important; }
           config_display: large
 
           plugin_languages: yes
@@ -83,6 +89,12 @@ jobs:
           template: classic
           base: ""
           config_timezone: Europe/Bratislava
+          extras_css: |
+            body { background: #0c0a08 !important; color: #fafaf9 !important;
+                   font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif !important; }
+            h2 { color: #f97316 !important; letter-spacing: -0.01em; }
+            a { color: #f97316 !important; }
+            .field, .row, .value { color: rgba(250,250,249,0.6) !important; }
 
           plugin_notable: yes
           plugin_notable_repositories: yes
