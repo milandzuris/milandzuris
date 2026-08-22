@@ -1,0 +1,152 @@
+name: Preview README on Branch
+
+# ─────────────────────────────────────────────────────────────────────
+# Vyrobí ŽIVÝ NÁHĽAD celého README so všetkými obrázkami.
+#
+# Spúšťa sa VÝHRADNE ručne: Actions → Preview README on Branch
+#                          → Run workflow → vyber Branch → Run
+#
+# Výsledok si pozrieš tu:
+#   https://github.com/milandzuris/milandzuris/blob/preview/README.md
+#
+# Branch "preview" sa NIKDY nemerguje do "main". Je len na pozeranie.
+# Pri každom behu sa prepíše nanovo jediným commitom, takže repo nerastie.
+# Branch "main" ani Branch z pull requestu sa nijako nemenia.
+# ─────────────────────────────────────────────────────────────────────
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: preview
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-preview:
+    name: Build README preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout selected Branch
+        uses: actions/checkout@v4
+
+      # ── 1/4  Snake ────────────────────────────────────────────────
+      - name: Render snake
+        uses: Platane/snk@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/github-snake.svg?palette=github-light
+            dist/github-snake-dark.svg?palette=github-dark&color_snake=#a371f7
+
+      # ── 2/4  3D contrib ───────────────────────────────────────────
+      - name: Render 3D contribution calendar
+        uses: yoshi389111/github-profile-3d-contrib@0.7.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: ${{ github.repository_owner }}
+
+      # ── 3/4  Metrics — output_action: none = NECOMMITUJE ──────────
+      - name: Render metrics panel 1
+        uses: lowlighter/metrics@v3.34
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          filename: assets/metrics-1.svg
+          user: ${{ github.repository_owner }}
+          template: classic
+          base: header, activity, community, repositories, metadata
+          config_timezone: Europe/Bratislava
+          config_display: large
+          output_action: none
+          plugin_languages: yes
+          plugin_languages_indepth: no
+          plugin_languages_limit: 8
+          plugin_languages_sections: most-used
+          plugin_languages_details: bytes-size, percentage
+          plugin_followup: yes
+          plugin_followup_sections: repositories
+          plugin_followup_indepth: no
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full-year
+          plugin_people: yes
+          plugin_people_limit: 24
+          plugin_people_size: 28
+          plugin_people_types: followers, following
+
+      - name: Render metrics panel 2
+        uses: lowlighter/metrics@v3.34
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          filename: assets/metrics-2.svg
+          user: ${{ github.repository_owner }}
+          template: classic
+          base: ""
+          config_timezone: Europe/Bratislava
+          output_action: none
+          plugin_notable: yes
+          plugin_notable_repositories: yes
+          plugin_notable_indepth: no
+          plugin_notable_types: commit
+          plugin_stars: yes
+          plugin_stars_limit: 4
+
+      # ── 4/4  Poskladať a odoslať do Branch "preview" ──────────────
+      - name: Assemble preview Branch
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          OUT=/tmp/preview-build
+          rm -rf "$OUT"
+          mkdir -p "$OUT/snake" "$OUT/assets" "$OUT/profile-3d-contrib"
+
+          cp dist/*.svg               "$OUT/snake/"
+          cp assets/metrics-*.svg     "$OUT/assets/"
+          cp profile-3d-contrib/*.svg "$OUT/profile-3d-contrib/"
+
+          # Kópia README s cestami prepísanými na Branch "preview".
+          # Poradie je dôležité: najprv /output/, až potom /main/.
+          sed -e "s|/${REPO}/output/|/${REPO}/preview/snake/|g" \
+              -e "s|/${REPO}/main/|/${REPO}/preview/|g" \
+              README.md > "$OUT/body.md"
+
+          {
+            echo "> [!WARNING]"
+            echo "> **TOTO JE NÁHĽAD, NIE TVOJ PROFIL.**"
+            echo "> Branch \`preview\` sa nikdy nemerguje do \`main\`."
+            echo ">"
+            echo "> Zdrojová Branch: \`${GITHUB_REF_NAME}\` · commit \`${GITHUB_SHA:0:7}\`"
+            echo "> Vygenerované: \`$(date -u '+%Y-%m-%d %H:%M UTC')\`"
+            echo
+            echo "---"
+            echo
+            cat "$OUT/body.md"
+          } > "$OUT/README.md"
+          rm "$OUT/body.md"
+
+          echo "Prepísané cesty:"
+          grep -o "${REPO}/preview/[^\"]*" "$OUT/README.md" | sort -u || true
+
+      - name: Force push to preview Branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          cd /tmp/preview-build
+          git init -q -b preview
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "preview from ${GITHUB_REF_NAME} (${GITHUB_SHA:0:7})"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          git push -f -q origin preview
+
+          LINK="https://github.com/${REPO}/blob/preview/README.md"
+          echo "### Náhľad je pripravený"      >> "$GITHUB_STEP_SUMMARY"
+          echo ""                              >> "$GITHUB_STEP_SUMMARY"
+          echo "[Otvoriť README na Branch \`preview\`]($LINK)" >> "$GITHUB_STEP_SUMMARY"
