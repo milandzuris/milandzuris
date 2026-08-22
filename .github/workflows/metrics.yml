@@ -34,7 +34,7 @@ jobs:
 
           # Najviac používané jazyky (indepth = ráta reálne riadky kódu)
           plugin_languages: yes
-          plugin_languages_indepth: yes
+          plugin_languages_indepth: no    # yes = klonuje repa a ráta riadky kódu (pomalé, +10-25 min)
           plugin_languages_limit: 8
           plugin_languages_sections: most-used
           plugin_languages_details: bytes-size, percentage
@@ -42,7 +42,7 @@ jobs:
           # Stav issues a pull requestov
           plugin_followup: yes
           plugin_followup_sections: repositories
-          plugin_followup_indepth: yes
+          plugin_followup_indepth: no     # yes = rozpad issues/PR podľa repozitárov (pomalé)
 
           # Izometrický kalendár + commit streaky
           plugin_isocalendar: yes
@@ -76,7 +76,7 @@ jobs:
           # Repozitáre, do ktorých si prispel mimo vlastných
           plugin_notable: yes
           plugin_notable_repositories: yes
-          plugin_notable_indepth: yes
+          plugin_notable_indepth: no      # yes = počty commitov pri každom repe (pomalé)
           plugin_notable_types: commit
 
           # Naposledy hviezdičkované repá
