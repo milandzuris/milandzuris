@@ -1,0 +1,27 @@
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+
+    schedule:
+      interval: "monthly"
+      day: "saturday"
+      time: "09:00"
+      timezone: "Europe/Bratislava"
+
+    # Všetky akcie zabalí do JEDNÉHO pull requestu, nie štyroch.
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+    # Max 1 otvorený pull request naraz — nehromadí sa ti to.
+    open-pull-requests-limit: 1
+
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+    labels:
+      - "dependencies"
