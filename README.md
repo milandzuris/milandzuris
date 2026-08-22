@@ -38,9 +38,9 @@ I'm Milan, a passionate developer with a keen interest in Smart Home technologie
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/milandzuris/milandzuris/output/github-snake-dark.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/milandzuris/milandzuris/output/github-snake.svg" />
-  <img alt="A snake consuming this profile's contribution graph" src="https://raw.githubusercontent.com/milandzuris/milandzuris/output/github-snake-dark.svg" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/milandzuris/milandzuris/snake/github-snake-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/milandzuris/milandzuris/snake/github-snake.svg" />
+  <img alt="A snake consuming this profile's contribution graph" src="https://raw.githubusercontent.com/milandzuris/milandzuris/snake/github-snake-dark.svg" />
 </picture>
 
 </div>
