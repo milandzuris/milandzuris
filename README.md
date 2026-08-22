@@ -37,16 +37,7 @@ I'm Milan, a passionate developer with a keen interest in Smart Home technologie
 
 <div align="center">
 
-<img height="165" src="https://github-readme-stats.vercel.app/api?username=milandzuris&show_icons=true&include_all_commits=true&count_private=true&hide_border=true&theme=dark&title_color=39d353&icon_color=39d353&text_color=c9d1d9&bg_color=0d1117" />
-<img height="165" src="https://github-readme-stats.vercel.app/api/top-langs/?username=milandzuris&layout=compact&langs_count=8&hide_border=true&theme=dark&title_color=39d353&text_color=c9d1d9&bg_color=0d1117" />
-
-<br/>
-
-<img src="https://streak-stats.demolab.com?user=milandzuris&hide_border=true&theme=dark&ring=39d353&fire=39d353&currStreakLabel=39d353&sideLabels=c9d1d9&dates=8b949e&background=0d1117" />
-
-<br/><br/>
-
-<img src="https://github-profile-trophy.vercel.app/?username=milandzuris&theme=matrix&no-frame=true&no-bg=true&column=7&margin-w=8" />
+<img src="https://raw.githubusercontent.com/milandzuris/milandzuris/main/assets/metrics-3.svg" alt="GitHub achievements" />
 
 </div>
 
