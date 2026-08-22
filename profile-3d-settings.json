@@ -1,0 +1,19 @@
+[
+  {
+    "type": "normal",
+    "fileName": "profile-lumina.svg",
+    "backgroundColor": "#0c0a08",
+    "foregroundColor": "#fafaf9",
+    "strongColor": "#f97316",
+    "weakColor": "#6b6560",
+    "radarColor": "#f97316",
+    "growingAnimation": true,
+    "contribColors": [
+      "#1a1816",
+      "#7c3d0d",
+      "#b45309",
+      "#f97316",
+      "#fb923c"
+    ]
+  }
+]
