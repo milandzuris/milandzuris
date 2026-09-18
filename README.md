@@ -27,10 +27,6 @@ I'm Milan, a passionate developer with a keen interest in Smart Home technologie
 - 🏠 [TuYa Data Points](https://github.com/DzurisHome/Tuya-Data-Points): TuYa Data Points for configuration.
 - 🌡️ [ESPHome IKEA VINDRIKTNING](https://github.com/DzurisHome/ESPHome-IKEA-VINDRIKTNING): How to make IKEA VINDRIKTNING Smart.
 
-## 🌐 Connect with Me
-
-- 👉 Visit [Linktr.ee/DzurisHome](https://linktr.ee/DzurisHome) for more links and connections!
-
 ---
 
 ## 🐍 Contribution Snake
