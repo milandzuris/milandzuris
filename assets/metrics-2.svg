@@ -45,7 +45,7 @@ a { color: #f97316 !important; }
                                     </svg>
                                     <div class="name">
                                         <span>s60sc/ESP32_AdBlocker</span>
-                                        <span>starred 7 hours ago</span>
+                                        <span>starred 15 hours ago</span>
                                     </div>
                                 </div>
                                 <div class="field description">ESP32 based DNS sinkhole for ads and trackers</div>
@@ -98,7 +98,7 @@ a { color: #f97316 !important; }
                                     </svg>
                                     <div class="name">
                                         <span>reolink/reolink-cli</span>
-                                        <span>starred 8 hours ago</span>
+                                        <span>starred 17 hours ago</span>
                                     </div>
                                 </div>
                                 <div class="field description">Official command-line tool for Reolink IP cameras, doorbells and NVRs — LAN only, no cloud. Snapshots, PTZ, RTSP/RTMP stream URLs, two-way audio (talkback/TTS), motion and AI detection, event monitoring, VOD download. JSON output and a built-in MCP server. Works with Home Assistant, Frigate and go2rtc.</div>
