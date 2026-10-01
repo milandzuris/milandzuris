@@ -36,7 +36,7 @@ jobs:
       contents: write
 
     steps:
-      - uses: lowlighter/metrics@v3.34
+      - uses: lowlighter/metrics@v4
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           filename: assets/metrics-1.svg
@@ -81,7 +81,7 @@ jobs:
       contents: write
 
     steps:
-      - uses: lowlighter/metrics@v3.34
+      - uses: lowlighter/metrics@v4
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           filename: assets/metrics-2.svg
