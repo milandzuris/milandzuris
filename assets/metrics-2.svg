@@ -145,7 +145,7 @@ a { color: #f97316 !important; }
                                     </svg>
                                     <div class="name">
                                         <span>reolink/reolink-cli</span>
-                                        <span>starred 5 days ago</span>
+                                        <span>starred 6 days ago</span>
                                     </div>
                                 </div>
                                 <div class="field description">Official command-line tool for Reolink IP cameras, doorbells and NVRs — LAN only, no cloud. Snapshots, PTZ, RTSP/RTMP stream URLs, two-way audio (talkback/TTS), motion and AI detection, event monitoring, VOD download. JSON output and a built-in MCP server. Works with Home Assistant, Frigate and go2rtc.</div>
