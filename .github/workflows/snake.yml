@@ -43,7 +43,7 @@ jobs:
             dist/github-snake-dark.svg?color_snake=#f97316&color_dots=#141210,#7c3d0d,#b45309,#f97316,#fb923c
 
       - name: Push to snake Branch
-        uses: crazy-max/ghaction-github-pages@v4
+        uses: crazy-max/ghaction-github-pages@v5
         with:
           target_branch: snake
           build_dir: dist
