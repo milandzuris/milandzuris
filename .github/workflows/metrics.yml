@@ -1,105 +1,94 @@
+#Generate Metrics
+#Metrics panel so štatistikami účtu (Activity, Repositories, Contributions calendar, Notable contributions, Stars)
+#obalený do okna terminálu (Terminal Frame) → assets/metrics.svg v Branch main.
+#Na paneli nie je meno ani priezvisko (bez sekcií header a followup).
+#Potrebuje Secret METRICS_TOKEN (classic PAT: public_repo + read:user).
 name: Generate Metrics
 
-# Vygeneruje dva veľké informačné panely o tvojom účte.
-# Ukladá do priečinka assets/ v Branch "main".
-#
-# POZOR: vyžaduje secret METRICS_TOKEN (classic PAT).
-# Vstavaný GITHUB_TOKEN tu nestačí — číta dáta z celého účtu.
-
 on:
+  #Každé 4 hodiny (00:50, 04:50, 08:50 …) slovenského času
   schedule:
-    # Každé 4 hodiny, na 50. minúte (UTC)
-    # Náš čas v lete = +2h → 02:50, 06:50, 10:50, 14:50, 18:50, 22:50
     - cron: "50 */4 * * *"
-
+      timezone: "Europe/Bratislava"
+  #Ručné spustenie (tlačidlo Run workflow)
   workflow_dispatch:
-
+  #Po zmene tohto workflowu alebo Terminal Frame
   push:
     branches:
       - main
     paths:
-      - .github/workflows/metrics.yml
+      - ".github/workflows/metrics.yml"
+      - ".github/profile/**"
+
+permissions: {}
 
 concurrency:
   group: metrics
   cancel-in-progress: true
 
 jobs:
-
-  # ── Panel 1 → assets/metrics-1.svg ──────────────────────────────
-  # Aktivita, komunita, repozitáre, jazyky, kalendár, followeri
-  panel-one:
-    name: Render panel 1
+  metrics:
+    name: Generate Metrics
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
       contents: write
-
     steps:
-      - uses: lowlighter/metrics@v3.34
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      #Metrics Render iba vyrobí panel (bez Commit), Commit až po Terminal Frame
+      - name: Metrics Render
+        uses: lowlighter/metrics@65836723097537a54cd8eb90f61839426b4266b6 # v3.34
         with:
           token: ${{ secrets.METRICS_TOKEN }}
-          filename: assets/metrics-1.svg
+          filename: metrics.svg
+          output_action: none
           user: ${{ github.repository_owner }}
           template: classic
-          base: header, activity, community, repositories, metadata
+          base: activity, community, repositories, metadata
           config_timezone: Europe/Bratislava
-          extras_css: |
-            body { background: #0c0a08 !important; color: #fafaf9 !important;
-                   font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif !important; }
-            h2 { color: #f97316 !important; letter-spacing: -0.01em; }
-            a { color: #f97316 !important; }
-            .field, .row, .value { color: rgba(250,250,249,0.6) !important; }
-          config_display: large
-
-          plugin_languages: yes
-          plugin_languages_indepth: no      # yes = klonuje repá, +10-25 min
-          plugin_languages_limit: 8
-          plugin_languages_sections: most-used
-          plugin_languages_details: bytes-size, percentage
-
-          plugin_followup: yes
-          plugin_followup_sections: repositories
-          plugin_followup_indepth: no
-
+          config_display: regular
           plugin_isocalendar: yes
           plugin_isocalendar_duration: full-year
-
-          plugin_people: yes
-          plugin_people_limit: 24
-          plugin_people_size: 28
-          plugin_people_types: followers, following
-
-  # ── Panel 2 → assets/metrics-2.svg ──────────────────────────────
-  # Notable contributions, naposledy hviezdičkované repozitáre
-  panel-two:
-    name: Render panel 2
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    needs: panel-one        # za sebou, aby si joby netlačili commit naraz
-    permissions:
-      contents: write
-
-    steps:
-      - uses: lowlighter/metrics@v3.34
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          filename: assets/metrics-2.svg
-          user: ${{ github.repository_owner }}
-          template: classic
-          base: ""
-          config_timezone: Europe/Bratislava
-          extras_css: |
-            body { background: #0c0a08 !important; color: #fafaf9 !important;
-                   font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif !important; }
-            h2 { color: #f97316 !important; letter-spacing: -0.01em; }
-            a { color: #f97316 !important; }
-            .field, .row, .value { color: rgba(250,250,249,0.6) !important; }
-
           plugin_notable: yes
           plugin_notable_repositories: yes
-          plugin_notable_indepth: no
           plugin_notable_types: commit
-
           plugin_stars: yes
           plugin_stars_limit: 4
+          #Tyrkysová téma (pozadie dáva Terminal Frame)
+          extras_css: |
+            foreignObject > div { background: #0b0f14 !important; }
+            body { background: #0b0f14 !important; color: #e6edf3 !important;
+                   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important; }
+            h2, h2 a, a { color: #22d3ee !important; }
+            h2 svg, .field svg { fill: #22d3ee !important; }
+            .field, .row, .value, h3 { color: #9fb0b8 !important; }
+            [fill="#ebedf0"] { fill: #1c2128 !important; }
+            [fill="#9be9a8"] { fill: #155e75 !important; }
+            [fill="#40c463"] { fill: #0891b2 !important; }
+            [fill="#30a14e"] { fill: #22d3ee !important; }
+            [fill="#216e39"] { fill: #67e8f9 !important; }
+            [fill="#238636"] { fill: #22d3ee !important; }
+
+      - name: Terminal Frame
+        run: |
+          mkdir -p assets
+          sudo cp /metrics_renders/metrics.svg "${RUNNER_TEMP}/panel.svg"
+          sudo chown "$(id -u)" "${RUNNER_TEMP}/panel.svg"
+          python3 .github/profile/terminal_frame.py \
+            "${RUNNER_TEMP}/panel.svg" \
+            .github/profile/terminal-frame.svg \
+            assets/metrics.svg
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/metrics.svg
+          if git diff --staged --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit --quiet --message "Generate Metrics: Update Metrics [skip ci]"
+          git push

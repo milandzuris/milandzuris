@@ -1,27 +1,26 @@
+#Dependabot
+#Každý pondelok o 16:00 skontroluje všetky GitHub Actions vo workflowoch.
+#Keď je nová verzia → PR v tomto repe, priradený tebe (zamkne ho Pull Request Lock). Merge = aktualizované.
 version: 2
-
 updates:
+  #GitHub Actions (checkout, metrics, snk, ghaction-github-pages)
   - package-ecosystem: "github-actions"
     directory: "/"
-
     schedule:
-      interval: "monthly"
-      day: "saturday"
-      time: "09:00"
+      interval: "weekly"
+      day: "monday"
+      time: "16:00"
       timezone: "Europe/Bratislava"
-
-    # Všetky akcie zabalí do JEDNÉHO pull requestu, nie štyroch.
+    assignees:
+      - "milandzuris"
     groups:
-      actions:
+      github-actions:
         patterns:
           - "*"
-
-    # Max 1 otvorený pull request naraz — nehromadí sa ti to.
-    open-pull-requests-limit: 1
-
+    #metrics v4 nefunguje ako GitHub Action (chýba action.yml) → ostávame na v3
+    ignore:
+      - dependency-name: "lowlighter/metrics"
+        update-types:
+          - "version-update:semver-major"
     commit-message:
-      prefix: "chore"
-      include: "scope"
-
-    labels:
-      - "dependencies"
+      prefix: "Dependabot"

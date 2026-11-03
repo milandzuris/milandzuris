@@ -1,51 +1,66 @@
+#Generate Snake
+#Had, ktorý žerie tvoj Contribution graf. Otočený na výšku (pásik vpravo), tyrkysová farba.
+#Ukladá do Branch snake (nie do Branch main), README ho berie odtiaľ.
 name: Generate Snake
 
-# Vygeneruje animáciu hada, ktorý žerie tvoj contribution graf.
-# Výsledok ukladá do Branch "snake" — NIE do "main".
-
 on:
+  #Každé 4 hodiny (00:30, 04:30, 08:30 …) slovenského času
   schedule:
-    # Každé 4 hodiny, na 30. minúte. Cron beží v UTC!
-    # Náš čas v lete (CEST) = +2h → 02:30, 06:30, 10:30, 14:30, 18:30, 22:30
-    # V zime (CET) = +1h → o hodinu skôr. Cron sa neprepína sám.
     - cron: "30 */4 * * *"
-
-  # Ručné spustenie tlačidlom "Run workflow" v záložke Actions
+      timezone: "Europe/Bratislava"
+  #Ručné spustenie (tlačidlo Run workflow)
   workflow_dispatch:
-
-  # Pri pushi len ak si zmenil tento súbor. Úprava README nič nespúšťa.
+  #Po zmene tohto workflowu
   push:
     branches:
       - main
     paths:
-      - .github/workflows/snake.yml
+      - ".github/workflows/snake.yml"
 
-# Starší bežiaci beh sa zruší namiesto hromadenia fronty
+permissions: {}
+
 concurrency:
   group: snake
   cancel-in-progress: true
 
 jobs:
-  generate:
-    name: Render snake SVG
+  snake:
+    name: Generate Snake
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: write
-
     steps:
-      - name: Render snake
-        uses: Platane/snk@v3
+      - name: Snake Render
+        uses: Platane/snk@d8f6715049803e982ee5ff501b6b9b7d5deeb09b # v3.5.0
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/github-snake.svg?color_snake=#f97316&color_dots=#f5f5f4,#fed7aa,#fb923c,#f97316,#c2410c
-            dist/github-snake-dark.svg?color_snake=#f97316&color_dots=#141210,#7c3d0d,#b45309,#f97316,#fb923c
+            dist/github-snake.svg?color_snake=#22d3ee&color_dots=#1c2128,#155e75,#0891b2,#22d3ee,#67e8f9
 
-      - name: Push to snake Branch
-        uses: crazy-max/ghaction-github-pages@v4
+      #Snake Vertical: riadky ↔ stĺpce (pásik s priebehom skončí vpravo)
+      - name: Snake Vertical
+        run: |
+          python3 - dist/github-snake.svg <<'PY'
+          import re, sys
+          path = sys.argv[1]
+          svg = open(path, encoding="utf-8").read()
+          head, body = re.match(r"(<svg[^>]*>)(.*)</svg>\s*$", svg, re.S).groups()
+          x, y, w, h = (float(v) for v in re.search(r'viewBox="([^"]+)"', head).group(1).split())
+          head = re.sub(r'viewBox="[^"]+"', f'viewBox="{y:g} {x:g} {h:g} {w:g}"', head)
+          head = re.sub(r'\swidth="[^"]+"', f' width="{h:g}"', head, count=1)
+          head = re.sub(r'\sheight="[^"]+"', f' height="{w:g}"', head, count=1)
+          keep = "".join(re.findall(r"<desc>.*?</desc>|<style>.*?</style>", body, re.S))
+          rest = re.sub(r"<desc>.*?</desc>|<style>.*?</style>", "", body, flags=re.S)
+          open(path, "w", encoding="utf-8").write(f'{head}{keep}<g transform="matrix(0 1 1 0 0 0)">{rest}</g></svg>')
+          print(f"Snake Vertical: {h:g} x {w:g}")
+          PY
+
+      - name: Snake Branch
+        uses: crazy-max/ghaction-github-pages@1d6ee9b181a81033a16bd707a1401afa978daab4 # v5.0.0
         with:
           target_branch: snake
           build_dir: dist
+          commit_message: "Generate Snake: Update Snake"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
