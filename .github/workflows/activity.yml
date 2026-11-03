@@ -1,0 +1,64 @@
+#Generate Activity
+#Z GitHub API (posledný rok) vyrobí dve karty v štýle terminálu → Branch main:
+#- assets/activity.svg  pavučina + 8 údajov (contributions, commits, issues, pull requests, ...)
+#- assets/uptime.svg    52 týždňov ako pilulky, na výšku (vpravo vedľa textu v README)
+#Skript: .github/activity/activity.py
+#Potrebuje Secret METRICS_TOKEN (classic PAT: public_repo + read:user).
+name: Generate Activity
+
+on:
+  #Každé 4 hodiny (00:50, 04:50, 08:50 …) slovenského času
+  schedule:
+    - cron: "50 */4 * * *"
+      timezone: "Europe/Bratislava"
+  #Ručné spustenie (tlačidlo Run workflow)
+  workflow_dispatch:
+  #Po zmene tohto workflowu alebo skriptu
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/activity.yml"
+      - ".github/activity/**"
+
+permissions: {}
+
+concurrency:
+  group: activity
+  cancel-in-progress: true
+
+jobs:
+  activity:
+    name: Generate Activity
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Python Packages
+        run: python -m pip install --quiet --requirement .github/activity/requirements.txt
+
+      - name: Activity Render
+        env:
+          GITHUB_TOKEN: ${{ secrets.METRICS_TOKEN }}
+        run: python .github/activity/activity.py "${GITHUB_REPOSITORY_OWNER}" assets
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/activity.svg assets/uptime.svg
+          if git diff --staged --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit --quiet --message "Generate Activity: Update Activity [skip ci]"
+          git push

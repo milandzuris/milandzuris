@@ -1,9 +1,9 @@
 #Dependabot
-#Každý pondelok o 16:00 skontroluje všetky GitHub Actions vo workflowoch.
+#Každý pondelok o 16:00 skontroluje všetky GitHub Actions vo workflowoch a Python balíčky.
 #Keď je nová verzia → PR v tomto repe, priradený tebe (zamkne ho Pull Request Lock). Merge = aktualizované.
 version: 2
 updates:
-  #GitHub Actions (checkout, metrics, snk, ghaction-github-pages)
+  #GitHub Actions (checkout, setup-python, snk, ghaction-github-pages)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -17,10 +17,18 @@ updates:
       github-actions:
         patterns:
           - "*"
-    #metrics v4 nefunguje ako GitHub Action (chýba action.yml) → ostávame na v3
-    ignore:
-      - dependency-name: "lowlighter/metrics"
-        update-types:
-          - "version-update:semver-major"
+    commit-message:
+      prefix: "Dependabot"
+
+  #Python balíčky pre Generate Activity (fonttools)
+  - package-ecosystem: "pip"
+    directory: "/.github/activity"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "16:00"
+      timezone: "Europe/Bratislava"
+    assignees:
+      - "milandzuris"
     commit-message:
       prefix: "Dependabot"

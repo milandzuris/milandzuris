@@ -6,7 +6,7 @@
 
 I'm Milan, a passionate developer with a keen interest in Smart Home technologies, particularly in Home Assistant and Node-RED.
 
-<img align="right" width="150" src="https://raw.githubusercontent.com/milandzuris/milandzuris/snake/snake.svg" alt="A snake eating my contribution graph" />
+<img align="right" width="180" src="assets/uptime.svg" alt="Uptime: active weeks over the last year" />
 
 #### `stack`
 
@@ -30,5 +30,11 @@ I'm Milan, a passionate developer with a keen interest in Smart Home technologie
 ### `stats`
 
 <div align="center">
-  <img src="assets/metrics.svg" width="600" alt="GitHub stats: activity, repositories, contributions calendar, notable contributions and recently starred repositories" />
+  <img src="assets/activity.svg" width="100%" alt="Activity over the last year: contributions, commits, issues, pull requests, code reviews, repositories and streaks" />
+</div>
+
+### `snake`
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/milandzuris/milandzuris/snake/snake.svg" width="100%" alt="A snake eating my contribution graph" />
 </div>

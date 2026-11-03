@@ -1,6 +1,6 @@
 #Generate Snake
-#Had, ktorý žerie tvoj Contribution graf. Otočený na výšku (pásik vpravo), tyrkysová farba.
-#Ukladá do Branch snake (nie do Branch main), README ho berie odtiaľ.
+#Had, ktorý žerie tvoj Contribution graf. Naležato na celú šírku, tyrkysová farba.
+#Ukladá do Branch snake (nie do Branch main), README ho berie odtiaľ (úplne dole).
 name: Generate Snake
 
 on:
@@ -37,26 +37,6 @@ jobs:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
             dist/snake.svg?color_snake=#22d3ee&color_dots=#1c2128,#155e75,#0891b2,#22d3ee,#67e8f9
-
-      #Snake Vertical: riadky ↔ stĺpce (pásik s priebehom skončí vpravo)
-      - name: Snake Vertical
-        run: |
-          #Snake Render beží v Docker ako root → súbor patrí rootovi, prevezmeme ho
-          sudo chown -R "$(id -u):$(id -g)" dist
-          python3 - dist/snake.svg <<'PY'
-          import re, sys
-          path = sys.argv[1]
-          svg = open(path, encoding="utf-8").read()
-          head, body = re.match(r"(<svg[^>]*>)(.*)</svg>\s*$", svg, re.S).groups()
-          x, y, w, h = (float(v) for v in re.search(r'viewBox="([^"]+)"', head).group(1).split())
-          head = re.sub(r'viewBox="[^"]+"', f'viewBox="{y:g} {x:g} {h:g} {w:g}"', head)
-          head = re.sub(r'\swidth="[^"]+"', f' width="{h:g}"', head, count=1)
-          head = re.sub(r'\sheight="[^"]+"', f' height="{w:g}"', head, count=1)
-          keep = "".join(re.findall(r"<desc>.*?</desc>|<style>.*?</style>", body, re.S))
-          rest = re.sub(r"<desc>.*?</desc>|<style>.*?</style>", "", body, flags=re.S)
-          open(path, "w", encoding="utf-8").write(f'{head}{keep}<g transform="matrix(0 1 1 0 0 0)">{rest}</g></svg>')
-          print(f"Snake Vertical: {h:g} x {w:g}")
-          PY
 
       - name: Snake Branch
         uses: crazy-max/ghaction-github-pages@1d6ee9b181a81033a16bd707a1401afa978daab4 # v5.0.0
