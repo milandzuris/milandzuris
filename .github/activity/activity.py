@@ -4,6 +4,8 @@
 #- uptime.svg / uptime-mobile.svg      52 týždňov ako pilulky (Uptime Kuma štýl), na výšku / naležato
 #Text je prevedený na tvary (JetBrains Mono), takže vyzerá rovnako v každom prehliadači.
 #Použitie: GITHUB_TOKEN=... python activity.py <username> <výstupný priečinok>
+#Test:    python activity.py --sample <výstupný priečinok>   (vzorové dáta, bez GitHub API)
+import datetime
 import json
 import math
 import os
@@ -277,9 +279,32 @@ def render_uptime_wide(s):
     return window(W, 232, TITLE_PREFIX + "~/uptime", "uptime --weeks 52", g)
 
 
+#Vzorové dáta pre Validate Activity (rovnaký tvar ako odpoveď GitHub API)
+def sample():
+    start = datetime.date(2025, 1, 5)
+    weeks = []
+    for w in range(53):
+        days = [{"date": (start + datetime.timedelta(days=w * 7 + d)).isoformat(), "contributionCount": (w * 7 + d) % 5} for d in range(7)]
+        weeks.append({"contributionDays": days})
+    return {
+        "repositories": {"totalCount": 29},
+        "contributionsCollection": {
+            "totalCommitContributions": 56,
+            "totalIssueContributions": 30,
+            "totalPullRequestContributions": 4,
+            "totalPullRequestReviewContributions": 1,
+            "contributionCalendar": {"totalContributions": 91, "weeks": weeks},
+        },
+    }
+
+
 def main():
-    login, out_dir = sys.argv[1], sys.argv[2]
-    s = summarize(fetch(login, os.environ["GITHUB_TOKEN"]))
+    if sys.argv[1] == "--sample":
+        out_dir = sys.argv[2]
+        s = summarize(sample())
+    else:
+        login, out_dir = sys.argv[1], sys.argv[2]
+        s = summarize(fetch(login, os.environ["GITHUB_TOKEN"]))
     os.makedirs(out_dir, exist_ok=True)
     cards = (
         ("activity.svg", render_activity(s)),
