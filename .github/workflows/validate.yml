@@ -1,0 +1,91 @@
+#Validate
+#Každý PR (napr. od Dependabota) otestuje, či nová verzia nič nepokazí:
+#- Validate Activity  nainštaluje balíčky z PR a vyrobí všetky 4 karty zo vzorových dát
+#- Validate Snake     spustí Snake Render z PR a skontroluje, že vznikol obrázok
+#Nič sa neukladá ani necommituje, je to iba test. ✅ = môžeš dať Merge, ❌ = nemerguj.
+#Secrets netreba (Validate Activity používa vzorové dáta), preto funguje aj pri PR od Dependabota.
+name: Validate
+
+on:
+  pull_request:
+    branches:
+      - main
+  #Ručné spustenie (tlačidlo Run workflow)
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: validate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  activity:
+    name: Validate Activity
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Python Packages
+        run: python -m pip install --requirement .github/activity/requirements.txt
+
+      - name: Activity Render
+        run: python .github/activity/activity.py --sample "${RUNNER_TEMP}/cards"
+
+      - name: Activity Check
+        run: |
+          python - "${RUNNER_TEMP}/cards" <<'PY'
+          import os, sys, xml.etree.ElementTree as ET
+          out = sys.argv[1]
+          ok = True
+          for name in ("activity.svg", "activity-mobile.svg", "uptime.svg", "uptime-mobile.svg"):
+              path = os.path.join(out, name)
+              try:
+                  size = os.path.getsize(path)
+                  root = ET.parse(path).getroot()
+                  paths = sum(1 for e in root.iter() if e.tag.endswith("path"))
+                  if size < 5000 or paths < 5:
+                      raise ValueError(f"too small ({size} B, {paths} paths)")
+                  print(f"OK    {name}: {size} B, {paths} paths")
+              except Exception as e:
+                  ok = False
+                  print(f"ERROR {name}: {e}")
+          sys.exit(0 if ok else 1)
+          PY
+
+  snake:
+    name: Validate Snake
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Snake Render
+        uses: Platane/snk@d8f6715049803e982ee5ff501b6b9b7d5deeb09b # v3.5.0
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/snake.svg?color_snake=#22d3ee&color_dots=#1c2128,#155e75,#0891b2,#22d3ee,#67e8f9
+
+      - name: Snake Check
+        run: |
+          python3 - dist/snake.svg <<'PY'
+          import os, sys, xml.etree.ElementTree as ET
+          path = sys.argv[1]
+          size = os.path.getsize(path)
+          ET.parse(path)
+          if size < 5000:
+              sys.exit(f"ERROR snake.svg: too small ({size} B)")
+          print(f"OK    snake.svg: {size} B")
+          PY
