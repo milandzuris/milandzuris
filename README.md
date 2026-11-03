@@ -6,7 +6,7 @@
 
 I'm Milan, a passionate developer with a keen interest in Smart Home technologies, particularly in Home Assistant and Node-RED.
 
-<img align="right" width="150" src="https://raw.githubusercontent.com/milandzuris/milandzuris/snake/github-snake.svg" alt="A snake eating my contribution graph" />
+<img align="right" width="150" src="https://raw.githubusercontent.com/milandzuris/milandzuris/snake/snake.svg" alt="A snake eating my contribution graph" />
 
 #### `stack`
 
