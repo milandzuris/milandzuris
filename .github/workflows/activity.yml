@@ -1,7 +1,9 @@
 #Generate Activity
 #Z GitHub API (posledný rok) vyrobí dve karty v štýle terminálu → Branch main:
-#- assets/activity.svg  pavučina + 8 údajov (contributions, commits, issues, pull requests, ...)
-#- assets/uptime.svg    52 týždňov ako pilulky, na výšku (vpravo vedľa textu v README)
+#- assets/activity.svg         pavučina + 8 údajov (contributions, commits, issues, pull requests, ...)
+#- assets/activity-mobile.svg  to isté pre Mobil (pavučina hore, údaje pod ňou)
+#- assets/uptime.svg           52 týždňov ako pilulky, na výšku (vpravo vedľa textu v README)
+#- assets/uptime-mobile.svg    to isté pre Mobil (naležato pod textom)
 #Skript: .github/activity/activity.py
 #Potrebuje Secret METRICS_TOKEN (classic PAT: public_repo + read:user).
 name: Generate Activity
@@ -55,7 +57,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/activity.svg assets/uptime.svg
+          git add assets/activity.svg assets/activity-mobile.svg assets/uptime.svg assets/uptime-mobile.svg
           if git diff --staged --quiet; then
             echo "No changes."
             exit 0

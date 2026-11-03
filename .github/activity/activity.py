@@ -1,7 +1,7 @@
 #Activity
 #Z GitHub API (posledný rok) vyrobí dve karty v štýle terminálu:
-#- assets/activity.svg  pavučina (Commits, Issues, Pull requests, Code review) + 8 údajov
-#- assets/uptime.svg    52 týždňov ako pilulky (Uptime Kuma štýl), na výšku
+#- activity.svg / activity-mobile.svg  pavučina (Commits, Issues, Pull requests, Code review) + 8 údajov
+#- uptime.svg / uptime-mobile.svg      52 týždňov ako pilulky (Uptime Kuma štýl), na výšku / naležato
 #Text je prevedený na tvary (JetBrains Mono), takže vyzerá rovnako v každom prehliadači.
 #Použitie: GITHUB_TOKEN=... python activity.py <username> <výstupný priečinok>
 import json
@@ -153,10 +153,13 @@ def plural(n, one, many):
 
 
 #Activity
-def render_activity(s):
+def _pct(s):
     total = s["commits"] + s["issues"] + s["pulls"] + s["reviews"]
-    pct = {k: (round(s[k] / total * 100) if total else 0) for k in ("commits", "issues", "pulls", "reviews")}
-    cx, cy, R = 150, 212, 76
+    return {k: (round(s[k] / total * 100) if total else 0) for k in ("commits", "issues", "pulls", "reviews")}
+
+
+def _radar(s, cx, cy, R):
+    pct = _pct(s)
     axes = [("Code review", "reviews", 0, -1), ("Issues", "issues", 1, 0), ("Pull requests", "pulls", 0, 1), ("Commits", "commits", -1, 0)]
     g = ""
     for k in (0.25, 0.5, 0.75, 1):
@@ -184,8 +187,11 @@ def render_activity(s):
         p1, _ = text("bold", f"{pct[key]}%", 14, lx, ly, anchor)
         p2, _ = text("regular", label, 11, lx, ly + 15, anchor)
         g += path(p1, ACCENT_LIGHT) + path(p2, MUTED)
-    g += '<line x1="300" y1="104" x2="300" y2="318" stroke="#fff" stroke-opacity=".06"/>'
-    rows = [
+    return g
+
+
+def _rows(s):
+    return [
         (str(s["contributions"]), "contributions"),
         (str(s["commits"]), "commits"),
         (str(s["issues"]), "issues opened"),
@@ -195,13 +201,32 @@ def render_activity(s):
         (plural(s["best"], "day", "days"), "best streak"),
         (plural(s["current"], "day", "days"), "current streak"),
     ]
-    for i, (value, label) in enumerate(rows):
+
+
+def _row(x, y, value, label, size=22, label_size=12):
+    a, _ = text("bold", value, size, x + 16, y + 4)
+    b, _ = text("regular", label, label_size, x + 16, y + 4 + label_size + 9)
+    return f'<rect x="{x}" y="{y - 10}" width="6" height="6" rx="1" fill="{ACCENT}"/>' + path(a, ACCENT_LIGHT) + path(b, MUTED)
+
+
+#Počítač: radar vľavo, 8 údajov v 4 stĺpcoch vpravo
+def render_activity(s):
+    g = _radar(s, 150, 212, 76)
+    g += '<line x1="300" y1="104" x2="300" y2="318" stroke="#fff" stroke-opacity=".06"/>'
+    for i, (value, label) in enumerate(_rows(s)):
         col, row = i % 4, i // 4
-        x, y = 326 + col * 136, 162 + row * 92
-        a, _ = text("bold", value, 22, x + 16, y + 4)
-        b, _ = text("regular", label, 12, x + 16, y + 25)
-        g += f'<rect x="{x}" y="{y - 10}" width="6" height="6" rx="1" fill="{ACCENT}"/>' + path(a, ACCENT_LIGHT) + path(b, MUTED)
+        g += _row(326 + col * 136, 162 + row * 92, value, label)
     return window(880, 340, TITLE_PREFIX + "~/activity", "gh activity --year", g)
+
+
+#Mobil: radar hore, 8 údajov v 2 stĺpcoch pod ním (väčšie písmo)
+def render_activity_mobile(s):
+    g = _radar(s, 240, 228, 92)
+    g += '<line x1="24" y1="378" x2="456" y2="378" stroke="#fff" stroke-opacity=".06"/>'
+    for i, (value, label) in enumerate(_rows(s)):
+        col, row = i % 2, i // 2
+        g += _row(32 + col * 220, 424 + row * 78, value, label, size=26, label_size=15)
+    return window(480, 424 + 3 * 78 + 64, TITLE_PREFIX + "~/activity", "gh activity --year", g)
 
 
 #Uptime
@@ -237,11 +262,32 @@ def render_uptime(s):
     return window(W, yb + 22 + 98, "~/uptime", "uptime", g, radius=12, small=True)
 
 
+#Mobil: 52 pilulok v jednom riadku (vodorovne)
+def render_uptime_wide(s):
+    weeks = s["weeks"]
+    active = sum(1 for w in weeks if w)
+    W = 480
+    bw = (W - 48 - 51 * 2.6) / 52
+    g = "".join(f'<rect x="{24 + i * (bw + 2.6):.1f}" y="92" width="{bw:.1f}" height="40" rx="2" fill="{level(w)}"/>' for i, w in enumerate(weeks))
+    n1, _ = text("regular", "52 weeks ago", 14, 24, 156)
+    n2, _ = text("regular", "now", 14, W - 24, 156, "end")
+    p1, w1 = text("bold", f"{round(active / 52 * 100)}%", 28, 24, 206)
+    p2, _ = text("regular", f"active weeks · {active} of 52", 15, 24 + w1 + 14, 202)
+    g += path(n1, MUTED) + path(n2, MUTED) + path(p1, ACCENT_LIGHT) + path(p2, MUTED)
+    return window(W, 232, TITLE_PREFIX + "~/uptime", "uptime --weeks 52", g)
+
+
 def main():
     login, out_dir = sys.argv[1], sys.argv[2]
     s = summarize(fetch(login, os.environ["GITHUB_TOKEN"]))
     os.makedirs(out_dir, exist_ok=True)
-    for name, svg in (("activity.svg", render_activity(s)), ("uptime.svg", render_uptime(s))):
+    cards = (
+        ("activity.svg", render_activity(s)),
+        ("activity-mobile.svg", render_activity_mobile(s)),
+        ("uptime.svg", render_uptime(s)),
+        ("uptime-mobile.svg", render_uptime_wide(s)),
+    )
+    for name, svg in cards:
         with open(os.path.join(out_dir, name), "w", encoding="utf-8") as f:
             f.write(svg)
     print("Activity:", json.dumps({k: v for k, v in s.items() if k != "weeks"}))
