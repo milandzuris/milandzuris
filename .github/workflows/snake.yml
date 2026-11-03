@@ -41,6 +41,8 @@ jobs:
       #Snake Vertical: riadky ↔ stĺpce (pásik s priebehom skončí vpravo)
       - name: Snake Vertical
         run: |
+          #Snake Render beží v Docker ako root → súbor patrí rootovi, prevezmeme ho
+          sudo chown -R "$(id -u):$(id -g)" dist
           python3 - dist/github-snake.svg <<'PY'
           import re, sys
           path = sys.argv[1]
